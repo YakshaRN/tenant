@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>POC Onboarding Demo</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  padding: 30px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+  color: #2c3e50;
+}
+
+section {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+button {
+  padding: 8px 16px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:disabled {
+  background: #999;
+}
+
+pre {
+  background: #111;
+  color: #0f0;
+  padding: 10px;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.status {
+  font-weight: bold;
+  margin-top: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🏗️ AI Onboarding POC Demo</h2>
+
+<!-- Upload -->
+<section>
+<h3>1️⃣ Upload Files</h3>
+
+<input type="file" id="files" multiple />
+<br>
+
+<button onclick="upload()">Upload</button>
+
+<div class="status" id="jobStatus"></div>
+</section>
+
+<!-- Prevalidation -->
+<section>
+<h3>2️⃣ Prevalidation</h3>
+
+<button onclick="runPre()" id="preBtn" disabled>
+Run Prevalidation
+</button>
+
+<pre id="preOut"></pre>
+</section>
+
+<!-- Mapping -->
+<section>
+<h3>3️⃣ LLM Mapping</h3>
+
+<button onclick="runMap()" id="mapBtn" disabled>
+Run Mapping
+</button>
+
+<pre id="mapOut"></pre>
+</section>
+
+<!-- Pipeline -->
+<section>
+<h3>4️⃣ Full Pipeline</h3>
+
+<button onclick="runAll()" id="runBtn" disabled>
+Run Full Pipeline
+</button>
+
+<pre id="runOut"></pre>
+</section>
+
+</div>
+
+<script>
+
+const API = "http://34.229.167.81:8000";
+
+let jobId = null;
+
+
+// Upload
+async function upload(){
+
+  let input = document.getElementById("files");
+
+  if(input.files.length === 0){
+    alert("Select files first");
+    return;
+  }
+
+  let fd = new FormData();
+
+  for(let f of input.files){
+    fd.append("files",f);
+  }
+
+  document.getElementById("jobStatus").innerText =
+    "Uploading...";
+
+  let r = await fetch(API+"/upload",{
+    method:"POST",
+    body:fd
+  });
+
+  let j = await r.json();
+
+  jobId = j.job_id;
+
+  document.getElementById("jobStatus").innerText =
+    "Job Created: "+jobId;
+
+  enableButtons();
+}
+
+
+// Enable buttons
+function enableButtons(){
+
+  document.getElementById("preBtn").disabled = false;
+  document.getElementById("mapBtn").disabled = false;
+  document.getElementById("runBtn").disabled = false;
+}
+
+
+// Prevalidation
+async function runPre(){
+
+  setStatus("preOut","Running prevalidation...");
+
+  let r = await fetch(API+"/prevalidate/"+jobId,{
+    method:"POST"
+  });
+
+  let j = await r.json();
+
+  show("preOut",j);
+}
+
+
+// Mapping
+async function runMap(){
+
+  setStatus("mapOut","Running LLM mapping (wait)...");
+
+  let r = await fetch(API+"/map/"+jobId,{
+    method:"POST"
+  });
+
+  let j = await r.json();
+
+  show("mapOut",j);
+}
+
+
+// Full Pipeline
+async function runAll(){
+
+  setStatus("runOut","Running full pipeline (wait)...");
+
+  let r = await fetch(API+"/run/"+jobId,{
+    method:"POST"
+  });
+
+  let j = await r.json();
+
+  show("runOut",j);
+}
+
+
+// Helpers
+function show(id,obj){
+
+  document.getElementById(id).innerText =
+    JSON.stringify(obj,null,2);
+}
+
+
+function setStatus(id,msg){
+
+  document.getElementById(id).innerText = msg;
+}
+
+</script>
+
+</body>
+</html>
