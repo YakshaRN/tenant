@@ -110,6 +110,17 @@ Run Full Pipeline
 <pre id="runOut"></pre>
 </section>
 
+<!-- SQL Ingestion -->
+<section>
+<h3>5️⃣ Move Hero Format to SQL</h3>
+
+<button onclick="runToSql()" id="sqlBtn" disabled>
+Move to SQL
+</button>
+
+<pre id="sqlOut"></pre>
+</section>
+
 </div>
 
 <script>
@@ -205,6 +216,24 @@ async function runAll(){
   let j = await r.json();
 
   show("runOut",j);
+
+  // Enable SQL ingestion only when the pipeline did not fail.
+  // Backend sets status="failed" when errors occurred.
+  const sqlEnabled = j && j.status && j.status !== "failed" && j.status !== "system_error";
+  document.getElementById("sqlBtn").disabled = !sqlEnabled;
+}
+
+// SQL Ingestion
+async function runToSql(){
+
+  setStatus("sqlOut","Ingesting staged Hero Format into SQL tables (wait)...");
+
+  let r = await fetch(API+"/to-sql/"+jobId,{
+    method:"POST"
+  });
+
+  let j = await r.json();
+  show("sqlOut",j);
 }
 
 
