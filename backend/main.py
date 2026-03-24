@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 import boto3
+import os
 import uuid
 import json
 import datetime
@@ -46,7 +47,7 @@ app.add_middleware(
 
 s3 = boto3.client("s3")
 
-BUCKET = "poc-onboarding-uploads"
+BUCKET = os.getenv("S3_BUCKET", "tenant-onboarding-186189159698-20260324")
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB per file
 MAX_FILES = 15
 
@@ -214,15 +215,12 @@ def _do_mapping(job_id):
 
     for attempt in range(3):
         try:
-            if attempt > 0:
-                used_prompt = (
-                    prompt
-                    + "\n\nCRITICAL: Output ONLY valid JSON. "
-                    + "No text before or after. No markdown. "
-                    + "No trailing commas. Start with { end with }."
-                )
-            else:
-                used_prompt = prompt
+            used_prompt = (
+                prompt
+                + "\n\nCRITICAL: Output ONLY VALID MINIFIED JSON. "
+                + "No text before or after. No markdown. "
+                + "No trailing commas. Start with { and end with }."
+            )
 
             txt = call_llm(used_prompt)
             raw_text = txt
@@ -254,7 +252,6 @@ def _do_mapping(job_id):
                     "file": file_val,
                     "column": col,
                     "confidence": round(conf, 3),
-                    "reason": entry.get("reason", "")
                 }
 
             logger.info(f"LLM mapping: {len(final)}/{len(hero_cols)} fields mapped")
@@ -306,7 +303,28 @@ def _do_mapping(job_id):
 
 @app.post("/map/{job_id}")
 def run_mapping(job_id: str):
-    return _do_mapping(job_id)
+    result = _do_mapping(job_id)
+    if isinstance(result, dict) and "error" in result:
+        try:
+            pre = _run_prevalidation(job_id)
+            fallback_mapping = _build_fallback_mapping_from_pre(pre)
+            if fallback_mapping:
+                s3.put_object(
+                    Bucket=BUCKET,
+                    Key=f"jobs/{job_id}/mapping.json",
+                    Body=json.dumps(fallback_mapping, indent=2),
+                )
+                return {
+                    "job_id": job_id,
+                    "mapped_fields": len(fallback_mapping),
+                    "total_hero_fields": len(load_hero_schema()),
+                    "mapping": fallback_mapping,
+                    "warning": "LLM mapping unavailable; used prevalidation-based fallback mapping.",
+                    "llm_error": result.get("error"),
+                }
+        except Exception as fallback_err:
+            logger.warning(f"/map fallback failed for {job_id}: {fallback_err}")
+    return result
 
 
 def _do_staging(job_id, mapping, files_with_df):
@@ -364,6 +382,60 @@ def _do_staging(job_id, mapping, files_with_df):
     s3.put_object(Bucket=BUCKET, Key=f"jobs/{job_id}/staging.csv", Body=buf.getvalue())
 
     return staged_df
+
+
+def _build_fallback_mapping_from_pre(pre_results):
+    """
+    Build deterministic mapping from prevalidation match_details when LLM
+    mapping is unavailable (e.g., Bedrock access/payment issues).
+    """
+    if not pre_results:
+        return {}
+
+    confidence_by_match_type = {
+        "exact": 0.95,
+        "normalized": 0.9,
+        "synonym": 0.82,
+        "partial": 0.7,
+    }
+
+    # Keep highest-confidence source when multiple sheets map to same hero field.
+    best = {}
+    for item in pre_results:
+        source_file = item.get("file")
+        result = item.get("result", {}) if isinstance(item, dict) else {}
+        details = result.get("match_details", []) if isinstance(result, dict) else []
+        if not source_file or not isinstance(details, list):
+            continue
+
+        for m in details:
+            if not isinstance(m, dict):
+                continue
+            src_col = m.get("source")
+            hero_col = m.get("hero")
+            match_type = m.get("match_type", "").lower()
+            if not src_col or not hero_col:
+                continue
+
+            conf = confidence_by_match_type.get(match_type, 0.65)
+            candidate = {
+                "file": source_file,
+                "column": src_col,
+                "confidence": conf,
+            }
+
+            if hero_col not in best or candidate["confidence"] > best[hero_col]["confidence"]:
+                best[hero_col] = candidate
+
+    # Round for consistency with LLM mapping format.
+    return {
+        hero: {
+            "file": info["file"],
+            "column": info["column"],
+            "confidence": round(float(info["confidence"]), 3),
+        }
+        for hero, info in best.items()
+    }
 
 
 def generate_stage_summaries(pre, mapping, tags, timings, errors):
@@ -441,6 +513,7 @@ def generate_stage_summaries(pre, mapping, tags, timings, errors):
 def run_pipeline(job_id: str):
     timings = {}
     errors = []
+    warnings = []
 
     # PREVALIDATION
     try:
@@ -469,8 +542,27 @@ def run_pipeline(job_id: str):
 
         timings["mapping"] = round(time.time() - t1, 2)
     except Exception as e:
-        errors.append(f"Mapping failed: {str(e)}")
-        mapping = {}
+        mapping_error = str(e)
+        mapping = _build_fallback_mapping_from_pre(pre)
+        if mapping:
+            logger.warning(
+                f"Using fallback mapping from prevalidation: {len(mapping)} fields mapped"
+            )
+            warnings.append(
+                "LLM mapping unavailable; used prevalidation-based fallback mapping."
+            )
+            try:
+                s3.put_object(
+                    Bucket=BUCKET,
+                    Key=f"jobs/{job_id}/mapping.json",
+                    Body=json.dumps(mapping, indent=2),
+                )
+            except Exception as persist_err:
+                logger.warning(f"Failed to persist fallback mapping: {persist_err}")
+                errors.append(f"Mapping fallback persist failed: {persist_err}")
+        else:
+            errors.append(f"Mapping failed: {mapping_error}")
+            mapping = {}
 
     # LOAD FILES (all files and all Excel sheets)
     try:
@@ -514,6 +606,7 @@ def run_pipeline(job_id: str):
     try:
         summary = build_summary(pre, mapping, tags, timings)
         summary["errors"] = errors
+        summary["warnings"] = warnings
         summary["validation_issues"] = validation_issues
         summary["fields_removed_by_validation"] = len(validation_issues)
         if errors:
@@ -766,6 +859,89 @@ def sql_summary(job_id: str):
             "job_id": job_id,
             "total_records": total,
             "records": counts,
+        }
+    finally:
+        db.close()
+
+
+SQL_TABLE_MODELS = {
+    "facilities": Facility,
+    "spaces": Space,
+    "tenants": Tenant,
+    "leases": Lease,
+    "alternate_contacts": AlternateContact,
+    "financial_balances": FinancialBalance,
+    "insurance_coverages": InsuranceCoverage,
+    "liens": Lien,
+    "promotions": Promotion,
+    "discounts": Discount,
+    "military_details": MilitaryDetail,
+}
+
+
+def _serialize_value(value):
+    if isinstance(value, (datetime.datetime, datetime.date)):
+        return value.isoformat()
+    return value
+
+
+def _apply_job_filter(query, model, table_name, job_id, db):
+    """Apply job-level filtering where possible."""
+    if not job_id:
+        return query
+
+    if hasattr(model, "job_id"):
+        return query.filter(model.job_id == job_id)
+
+    if table_name in ("alternate_contacts", "military_details"):
+        tenant_ids = [t.id for t in db.query(Tenant.id).filter(Tenant.job_id == job_id).all()]
+        return query.filter(model.tenant_id.in_(tenant_ids)) if tenant_ids else query.filter(False)
+
+    if table_name in ("financial_balances", "insurance_coverages", "liens", "promotions", "discounts"):
+        lease_ids = [l.id for l in db.query(Lease.id).filter(Lease.job_id == job_id).all()]
+        return query.filter(model.lease_id.in_(lease_ids)) if lease_ids else query.filter(False)
+
+    return query
+
+
+@app.get("/sql/tables")
+def list_sql_tables():
+    return {"tables": list(SQL_TABLE_MODELS.keys())}
+
+
+@app.get("/sql-preview/{table_name}")
+def sql_preview(table_name: str, limit: int = 50, offset: int = 0, job_id: str = ""):
+    if table_name not in SQL_TABLE_MODELS:
+        raise HTTPException(404, f"Unknown table: {table_name}")
+
+    limit = max(1, min(limit, 200))
+    offset = max(0, offset)
+
+    model = SQL_TABLE_MODELS[table_name]
+    db = SessionLocal()
+    try:
+        query = db.query(model)
+        query = _apply_job_filter(query, model, table_name, job_id.strip(), db)
+
+        total = query.count()
+        rows = query.offset(offset).limit(limit).all()
+
+        columns = [c.name for c in model.__table__.columns]
+        data = []
+        for row in rows:
+            item = {}
+            for col in columns:
+                item[col] = _serialize_value(getattr(row, col))
+            data.append(item)
+
+        return {
+            "table": table_name,
+            "job_id": job_id.strip() or None,
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "columns": columns,
+            "rows": data,
         }
     finally:
         db.close()

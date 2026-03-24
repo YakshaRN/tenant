@@ -119,15 +119,14 @@ def build_global_prompt(registry, hero_cols, hero_full=None):
         "  0.5-0.69: partial match, data somewhat fits but ambiguous\n"
         "  below 0.5: weak match — prefer leaving unmapped over a bad mapping\n\n"
 
-        "OUTPUT FORMAT — respond with ONLY valid JSON, no markdown, no extra text:\n\n"
+        "OUTPUT FORMAT — respond with ONLY valid MINIFIED JSON, no markdown, no extra text:\n\n"
         "  For Excel files with multiple sheets, the source 'file' is \"filename.xlsx::SheetName\".\n"
         "  Use the EXACT file (and sheet) string from the SOURCE COLUMNS list for each mapping.\n\n"
         "{\n"
         '  "Hero Field Name": {\n'
         '    "file": "source_filename.xlsx or source_filename.xlsx::SheetName",\n'
         '    "column": "source_column_name",\n'
-        '    "confidence": 0.85,\n'
-        '    "reason": "brief explanation including what sample values confirm the match"\n'
+        '    "confidence": 0.85\n'
         "  }\n"
         "}\n\n"
         "FINAL CHECKLIST BEFORE RESPONDING:\n"
@@ -137,7 +136,7 @@ def build_global_prompt(registry, hero_cols, hero_full=None):
         "[ ] Boolean hero fields (IsBusinessLease, Alarm Enabled, etc.) only have yes/no/true/false data\n"
         "[ ] Hero field names are EXACTLY as listed (case-sensitive)\n"
         '[ ] "file" and "column" exactly match the source names provided\n'
-        "[ ] Output is valid JSON (no trailing commas, no comments, no markdown)\n"
+        "[ ] Output is valid MINIFIED JSON (no trailing commas, no comments, no markdown)\n"
         "[ ] Response starts with { and ends with }"
     )
 

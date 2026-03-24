@@ -56,6 +56,72 @@ pre {
   font-weight: bold;
   margin-top: 5px;
 }
+
+.sql-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sql-controls input,
+.sql-controls select {
+  padding: 6px 8px;
+}
+
+#sqlMeta {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+#sqlTableWrap {
+  overflow: auto;
+  max-height: 420px;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+#sqlTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+#sqlTable th,
+#sqlTable td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#sqlTable th {
+  background: #f3f3f3;
+  position: sticky;
+  top: 0;
+ }
+
+.schema-diagram-wrap {
+  overflow: auto;
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.schema-diagram-wrap svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.schema-caption {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
 </style>
 </head>
 
@@ -121,13 +187,186 @@ Move to SQL
 <pre id="sqlOut"></pre>
 </section>
 
+<!-- SQL Browser -->
+<section>
+<h3>6️⃣ SQL Data Browser</h3>
+
+<div class="sql-controls">
+  <label>Table:</label>
+  <select id="tableSelect"></select>
+  <label>Job ID:</label>
+  <input id="jobFilter" placeholder="optional job_id filter" />
+  <label>Limit:</label>
+  <input id="sqlLimit" type="number" min="1" max="200" value="25" style="width:80px;" />
+  <button onclick="loadSqlPage(0)">Load</button>
+  <button onclick="prevSqlPage()">Prev</button>
+  <button onclick="nextSqlPage()">Next</button>
+</div>
+
+<div id="sqlMeta"></div>
+<div id="sqlTableWrap">
+  <table id="sqlTable"></table>
+</div>
+</section>
+
+<!-- DB schema diagram (static) -->
+<section>
+<h3>7️⃣ Database schema</h3>
+<p style="font-size:14px;color:#475569;margin:0 0 8px 0;">
+  Tables, key columns, and foreign-key relationships (SQLite / SQLAlchemy models).
+</p>
+<div class="schema-diagram-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 520" role="img" aria-labelledby="schemaTitle schemaDesc">
+  <title id="schemaTitle">Onboarding database entity-relationship diagram</title>
+  <desc id="schemaDesc">Facilities own spaces; leases link tenants and spaces; financial and other details attach to leases; alternate contact and military details attach to tenants.</desc>
+  <defs>
+    <marker id="arrowEnd" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#64748b"/>
+    </marker>
+    <style><![CDATA[
+      .tbl { fill: #ffffff; stroke: #334155; stroke-width: 1.2; }
+      .tbl-h { fill: #1e293b; }
+      .tbl-title { fill: #f8fafc; font: bold 11px Arial, sans-serif; }
+      .col { fill: #334155; font: 10px Consolas, monospace; }
+      .col-fk { fill: #b45309; font: 10px Consolas, monospace; }
+      .col-pk { fill: #1d4ed8; font: 10px Consolas, monospace; }
+      .edge { stroke: #64748b; stroke-width: 1.2; fill: none; marker-end: url(#arrowEnd); }
+      .edge-lbl { fill: #475569; font: 9px Arial, sans-serif; }
+    ]]></style>
+  </defs>
+
+  <!-- facilities -->
+  <rect class="tbl" x="200" y="12" width="158" height="72" rx="6"/>
+  <rect class="tbl-h" x="200" y="12" width="158" height="22" rx="6"/>
+  <text x="279" y="27" text-anchor="middle" class="tbl-title">facilities</text>
+  <text x="210" y="48" class="col-pk">id PK</text>
+  <text x="210" y="62" class="col">job_id, owner, name, building</text>
+
+  <!-- spaces -->
+  <rect class="tbl" x="200" y="98" width="158" height="102" rx="6"/>
+  <rect class="tbl-h" x="200" y="98" width="158" height="22" rx="6"/>
+  <text x="279" y="113" text-anchor="middle" class="tbl-title">spaces</text>
+  <text x="210" y="134" class="col-pk">id PK</text>
+  <text x="210" y="148" class="col">job_id, space, rate, …</text>
+  <text x="210" y="162" class="col-fk">facility_id → facilities</text>
+  <text x="210" y="176" class="col">width, length, floor, …</text>
+
+  <!-- tenants -->
+  <rect class="tbl" x="28" y="108" width="158" height="118" rx="6"/>
+  <rect class="tbl-h" x="28" y="108" width="158" height="22" rx="6"/>
+  <text x="107" y="123" text-anchor="middle" class="tbl-title">tenants</text>
+  <text x="38" y="144" class="col-pk">id PK</text>
+  <text x="38" y="158" class="col">job_id, account_code</text>
+  <text x="38" y="172" class="col">first_name, last_name, email</text>
+  <text x="38" y="186" class="col">address, city, state, zip</text>
+  <text x="38" y="200" class="col">phones, dob, dl_*, …</text>
+
+  <!-- alternate_contacts -->
+  <rect class="tbl" x="28" y="252" width="145" height="68" rx="6"/>
+  <rect class="tbl-h" x="28" y="252" width="145" height="20" rx="6"/>
+  <text x="100" y="266" text-anchor="middle" class="tbl-title">alternate_contacts</text>
+  <text x="36" y="284" class="col-pk">id PK</text>
+  <text x="36" y="298" class="col-fk">tenant_id → tenants (1:1)</text>
+
+  <!-- military_details -->
+  <rect class="tbl" x="28" y="332" width="145" height="68" rx="6"/>
+  <rect class="tbl-h" x="28" y="332" width="145" height="20" rx="6"/>
+  <text x="100" y="346" text-anchor="middle" class="tbl-title">military_details</text>
+  <text x="36" y="364" class="col-pk">id PK</text>
+  <text x="36" y="378" class="col-fk">tenant_id → tenants (1:1)</text>
+
+  <!-- leases -->
+  <rect class="tbl" x="378" y="248" width="198" height="148" rx="6"/>
+  <rect class="tbl-h" x="378" y="248" width="198" height="22" rx="6"/>
+  <text x="477" y="263" text-anchor="middle" class="tbl-title">leases</text>
+  <text x="388" y="284" class="col-pk">id PK</text>
+  <text x="388" y="298" class="col">job_id</text>
+  <text x="388" y="312" class="col-fk">tenant_id → tenants</text>
+  <text x="388" y="326" class="col-fk">space_id → spaces</text>
+  <text x="388" y="340" class="col">rent, dates, bill_day, …</text>
+  <text x="388" y="354" class="col">payment_cycle, is_business_lease</text>
+
+  <!-- financial_balances -->
+  <rect class="tbl" x="628" y="218" width="158" height="88" rx="6"/>
+  <rect class="tbl-h" x="628" y="218" width="158" height="20" rx="6"/>
+  <text x="707" y="232" text-anchor="middle" class="tbl-title">financial_balances</text>
+  <text x="636" y="252" class="col-pk">id PK</text>
+  <text x="636" y="266" class="col-fk">lease_id → leases (1:1)</text>
+  <text x="636" y="280" class="col">balances, prepaid_*, …</text>
+
+  <!-- insurance_coverages -->
+  <rect class="tbl" x="628" y="318" width="158" height="78" rx="6"/>
+  <rect class="tbl-h" x="628" y="318" width="158" height="20" rx="6"/>
+  <text x="707" y="332" text-anchor="middle" class="tbl-title">insurance_coverages</text>
+  <text x="636" y="352" class="col-pk">id PK</text>
+  <text x="636" y="366" class="col-fk">lease_id → leases (1:1)</text>
+  <text x="636" y="380" class="col">provider, coverage, …</text>
+
+  <!-- liens -->
+  <rect class="tbl" x="628" y="408" width="158" height="72" rx="6"/>
+  <rect class="tbl-h" x="628" y="408" width="158" height="20" rx="6"/>
+  <text x="707" y="422" text-anchor="middle" class="tbl-title">liens</text>
+  <text x="636" y="442" class="col-pk">id PK</text>
+  <text x="636" y="456" class="col-fk">lease_id → leases (1:1)</text>
+  <text x="636" y="470" class="col">status, holder, …</text>
+
+  <!-- promotions -->
+  <rect class="tbl" x="808" y="218" width="100" height="62" rx="6"/>
+  <rect class="tbl-h" x="808" y="218" width="100" height="18" rx="6"/>
+  <text x="858" y="230" text-anchor="middle" class="tbl-title">promotions</text>
+  <text x="814" y="248" class="col-fk">lease_id *</text>
+  <text x="814" y="262" class="col">promo fields…</text>
+
+  <!-- discounts -->
+  <rect class="tbl" x="808" y="292" width="100" height="62" rx="6"/>
+  <rect class="tbl-h" x="808" y="292" width="100" height="18" rx="6"/>
+  <text x="858" y="304" text-anchor="middle" class="tbl-title">discounts</text>
+  <text x="814" y="322" class="col-fk">lease_id *</text>
+  <text x="814" y="336" class="col">discount fields…</text>
+
+  <!-- Edges -->
+  <path class="edge" d="M279 84 L279 98"/>
+  <text x="288" y="94" class="edge-lbl">1 — *</text>
+
+  <!-- spaces (bottom) → leases (tenant_id / space_id anchors) -->
+  <path class="edge" d="M279 200 L279 268 L378 268 L378 310"/>
+  <text x="300" y="262" class="edge-lbl">space_id</text>
+
+  <path class="edge" d="M186 167 L378 310"/>
+  <text x="260" y="228" class="edge-lbl">tenant_id</text>
+
+  <path class="edge" d="M107 226 L107 252"/>
+  <text x="118" y="242" class="edge-lbl">1:1</text>
+
+  <path class="edge" d="M107 226 L107 332"/>
+  <text x="118" y="298" class="edge-lbl">1:1</text>
+
+  <!-- leases → children -->
+  <path class="edge" d="M576 300 L628 262"/>
+  <path class="edge" d="M576 322 L628 357"/>
+  <path class="edge" d="M576 344 L628 444"/>
+  <path class="edge" d="M576 310 L808 249"/>
+  <path class="edge" d="M576 322 L808 323"/>
+
+  <text x="592" y="278" class="edge-lbl">lease_id</text>
+</svg>
+</div>
+<p class="schema-caption">
+  <strong>Legend:</strong> <span style="color:#1d4ed8">blue</span> = primary key;
+  <span style="color:#b45309">orange</span> = foreign key.
+  Full column lists are available in the SQL Data Browser and in <code>backend/models.py</code>.
+</p>
+</section>
+
 </div>
 
 <script>
 
-const API = "http://34.229.167.81:8000";
+const API = `${window.location.protocol}//${window.location.hostname}:8000`;
 
 let jobId = null;
+let sqlOffset = 0;
+let sqlTotal = 0;
 
 
 // Upload
@@ -234,6 +473,12 @@ async function runToSql(){
 
   let j = await r.json();
   show("sqlOut",j);
+
+  // Auto-fill browser filter with current job for convenience.
+  if (jobId) {
+    document.getElementById("jobFilter").value = jobId;
+  }
+  loadSqlTables();
 }
 
 
@@ -249,6 +494,86 @@ function setStatus(id,msg){
 
   document.getElementById(id).innerText = msg;
 }
+
+async function loadSqlTables(){
+  try {
+    let r = await fetch(API + "/sql/tables");
+    let j = await r.json();
+    let sel = document.getElementById("tableSelect");
+    sel.innerHTML = "";
+    (j.tables || []).forEach(t => {
+      let opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = t;
+      sel.appendChild(opt);
+    });
+  } catch (e) {
+    document.getElementById("sqlMeta").innerText = "Failed to load SQL tables";
+  }
+}
+
+function renderSqlTable(columns, rows){
+  let table = document.getElementById("sqlTable");
+  if (!columns || columns.length === 0) {
+    table.innerHTML = "<tr><td>No columns</td></tr>";
+    return;
+  }
+
+  let head = "<tr>" + columns.map(c => `<th>${c}</th>`).join("") + "</tr>";
+  let body = rows.map(row => {
+    let tds = columns.map(c => {
+      let v = row[c];
+      if (v === null || v === undefined) return "<td></td>";
+      return `<td>${String(v)}</td>`;
+    }).join("");
+    return `<tr>${tds}</tr>`;
+  }).join("");
+
+  table.innerHTML = head + body;
+}
+
+async function loadSqlPage(offset){
+  let table = document.getElementById("tableSelect").value;
+  if (!table) return;
+
+  let limit = parseInt(document.getElementById("sqlLimit").value || "25", 10);
+  if (!limit || limit < 1) limit = 25;
+  if (limit > 200) limit = 200;
+
+  let jobFilter = document.getElementById("jobFilter").value.trim();
+  let q = new URLSearchParams({
+    limit: String(limit),
+    offset: String(Math.max(0, offset))
+  });
+  if (jobFilter) q.set("job_id", jobFilter);
+
+  document.getElementById("sqlMeta").innerText = "Loading...";
+
+  let r = await fetch(`${API}/sql-preview/${encodeURIComponent(table)}?${q.toString()}`);
+  let j = await r.json();
+
+  sqlOffset = j.offset || 0;
+  sqlTotal = j.total || 0;
+
+  renderSqlTable(j.columns || [], j.rows || []);
+  document.getElementById("sqlMeta").innerText =
+    `Table: ${j.table} | Rows: ${j.total} | Showing ${Math.min(sqlOffset + 1, Math.max(sqlTotal, 1))}-${Math.min(sqlOffset + (j.limit || limit), sqlTotal)}`;
+}
+
+function prevSqlPage(){
+  let limit = parseInt(document.getElementById("sqlLimit").value || "25", 10);
+  loadSqlPage(Math.max(0, sqlOffset - limit));
+}
+
+function nextSqlPage(){
+  let limit = parseInt(document.getElementById("sqlLimit").value || "25", 10);
+  let next = sqlOffset + limit;
+  if (next >= sqlTotal) return;
+  loadSqlPage(next);
+}
+
+// Initialize SQL browser
+loadSqlTables();
 
 </script>
 

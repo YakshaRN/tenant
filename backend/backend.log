@@ -1,0 +1,51 @@
+/home/ec2-user/venv/lib64/python3.9/site-packages/boto3/compat.py:89: PythonDeprecationWarning: Boto3 will no longer support Python 3.9 starting April 29, 2026. To continue receiving service updates, bug fixes, and security updates please upgrade to Python 3.10 or later. More information can be found here: https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/
+  warnings.warn(warning, PythonDeprecationWarning)
+INFO:     Started server process [95427]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+/home/ec2-user/venv/lib64/python3.9/site-packages/boto3/compat.py:89: PythonDeprecationWarning: Boto3 will no longer support Python 3.9 starting April 29, 2026. To continue receiving service updates, bug fixes, and security updates please upgrade to Python 3.10 or later. More information can be found here: https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/
+  warnings.warn(warning, PythonDeprecationWarning)
+Mapping attempt 1 failed: Could not parse JSON: Expecting ',' delimiter: line 1 column 11706 (char 11705)
+First 300 chars: {
+  "Owner": {
+    "file": "Multi-sheet-input (1).xlsx::Entities",
+    "column": "BusinessName",
+    "confidence": 0.9
+  },
+  "Name": {
+    "file": "Multi-sheet-input (1).xlsx::Units",
+    "column": "UnitIdentifier",
+    "confidence": 0.95
+  },
+  "Building": {
+    "file": "Multi-sheet-input (1).xlsx
+Mapping attempt 2 failed: Could not parse JSON: Expecting ',' delimiter: line 1 column 11706 (char 11705)
+First 300 chars: {
+  "Owner": {
+    "file": "Multi-sheet-input (1).xlsx::Entities",
+    "column": "BusinessName",
+    "confidence": 0.9
+  },
+  "Name": {
+    "file": "Multi-sheet-input (1).xlsx::Units",
+    "column": "UnitIdentifier",
+    "confidence": 0.95
+  },
+  "Building": {
+    "file": "Multi-sheet-input (1).xlsx
+Mapping attempt 3 failed: Could not parse JSON: Expecting ',' delimiter: line 1 column 11706 (char 11705)
+First 300 chars: {
+  "Owner": {
+    "file": "Multi-sheet-input (1).xlsx::Entities",
+    "column": "BusinessName",
+    "confidence": 0.9
+  },
+  "Name": {
+    "file": "Multi-sheet-input (1).xlsx::Units",
+    "column": "UnitIdentifier",
+    "confidence": 0.95
+  },
+  "Building": {
+    "file": "Multi-sheet-input (1).xlsx
+INFO:     127.0.0.1:60568 - "POST /map/job_20260324_080737_89ea4e HTTP/1.1" 200 OK

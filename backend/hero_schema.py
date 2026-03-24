@@ -8,7 +8,7 @@ logger = logging.getLogger("hero_schema")
 
 _cache = {}
 
-BUCKET = os.getenv("S3_BUCKET", "poc-onboarding-uploads")
+BUCKET = os.getenv("S3_BUCKET", "tenant-onboarding-186189159698-20260324")
 S3_KEY = "hero_format_description.json"
 LOCAL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "hero_format_description.json")
 

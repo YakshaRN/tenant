@@ -1,0 +1,835 @@
+[
+  {
+    "column_name": "Owner",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Name of the company."
+  },
+  {
+    "column_name": "Name",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Name of the storage facility or property."
+  },
+  {
+    "column_name": "Building",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Building or section identifier within the property."
+  },
+  {
+    "column_name": "Space",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Unit number or unique space ID (e.g., A101)."
+  },
+  {
+    "column_name": "Width",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Width of the unit (in feet)."
+  },
+  {
+    "column_name": "Length",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Length of the unit (in feet)."
+  },
+  {
+    "column_name": "Height",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Height of the unit (in feet)."
+  },
+  {
+    "column_name": "Rate",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Standard or base rent for the unit."
+  },
+  {
+    "column_name": "Web Rate",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Online or promotional rate shown on the website."
+  },
+  {
+    "column_name": "Space Size",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Combined size of the unit (e.g., 10 x 10)."
+  },
+  {
+    "column_name": "Space Category",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Unit classification (e.g., Climate Controlled, Drive-Up)."
+  },
+  {
+    "column_name": "Space Type",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Type of space (e.g., Storage, Parking, Office)."
+  },
+  {
+    "column_name": "Door Width",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Width of the unit’s door (in feet)."
+  },
+  {
+    "column_name": "Door Height",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Height of the unit’s door (in feet)."
+  },
+  {
+    "column_name": "Amenities",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Additional features such as lighting, 24-hour access, power outlet, etc."
+  },
+  {
+    "column_name": "Sq. Ft.",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Mandatory",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Total square footage of the unit (Width × Length)."
+  },
+  {
+    "column_name": "Floor",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Floor number or level where the unit is located. Eg: 0, 1"
+  },
+  {
+    "column_name": "First Name",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s first name."
+  },
+  {
+    "column_name": "Last Name",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s last name."
+  },
+  {
+    "column_name": "Middle Name",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s middle name (if any)."
+  },
+  {
+    "column_name": "Account Code",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Unique tenant account number or ID in the system.This will be same for all units leased by same tenant"
+  },
+  {
+    "column_name": "Address",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s billing street address."
+  },
+  {
+    "column_name": "City",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s billing city."
+  },
+  {
+    "column_name": "State",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s billing state or province code. Eg: CA, LA"
+  },
+  {
+    "column_name": "ZIP",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s postal code."
+  },
+  {
+    "column_name": "Country",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s country of residence."
+  },
+  {
+    "column_name": "Email",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s primary email address."
+  },
+  {
+    "column_name": "Cell Phone",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Tenant’s mobile phone number."
+  },
+  {
+    "column_name": "Home Phone",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s home phone number."
+  },
+  {
+    "column_name": "Work Phone",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s work phone number."
+  },
+  {
+    "column_name": "Access Code",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Gate or keypad access code assigned to the tenant."
+  },
+  {
+    "column_name": "DOB",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s date of birth."
+  },
+  {
+    "column_name": "Gender",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s gender."
+  },
+  {
+    "column_name": "Active Military",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Indicates if the tenant is an active military member."
+  },
+  {
+    "column_name": "DL Id",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s driver’s license number."
+  },
+  {
+    "column_name": "DL State",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "State that issued the tenant’s driver’s license."
+  },
+  {
+    "column_name": "DL City",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "City on the tenant’s driver’s license record."
+  },
+  {
+    "column_name": "DL Exp Date",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Expiration date of the tenant’s driver’s license."
+  },
+  {
+    "column_name": "Rent",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Current monthly rent amount charged to the tenant."
+  },
+  {
+    "column_name": "Last Rent Change Date",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Date of the last rent adjustment."
+  },
+  {
+    "column_name": "Move In Date",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Date the tenant moved into the unit."
+  },
+  {
+    "column_name": "Move Out Date",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Date the tenant vacated or is scheduled to vacate."
+  },
+  {
+    "column_name": "Paid Date",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Date of the last payment made."
+  },
+  {
+    "column_name": "Bill Day",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Billing day of the month (e.g., 1 or 15)."
+  },
+  {
+    "column_name": "Paid Through Date",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Mandatory",
+    "description": "Date through which the rent has been paid."
+  },
+  {
+    "column_name": "Alt First Name",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s first name."
+  },
+  {
+    "column_name": "Alt Last Name",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s last name."
+  },
+  {
+    "column_name": "Alt Middle Name",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s middle name."
+  },
+  {
+    "column_name": "Alt Address",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s street address."
+  },
+  {
+    "column_name": "Alt City",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s city."
+  },
+  {
+    "column_name": "Alt State",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s state."
+  },
+  {
+    "column_name": "Alt ZIP",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s ZIP code."
+  },
+  {
+    "column_name": "Alt Email",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s email address."
+  },
+  {
+    "column_name": "Alt Home Phone",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s home phone."
+  },
+  {
+    "column_name": "Alt Work Phone",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s work phone."
+  },
+  {
+    "column_name": "Alt Cell Phone",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Alternate contact’s mobile number."
+  },
+  {
+    "column_name": "Security Deposit",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Amount collected as a security deposit."
+  },
+  {
+    "column_name": "Security Deposit Balance",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Remaining or refundable portion of the deposit."
+  },
+  {
+    "column_name": "Rent Balance",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Outstanding rent amount due."
+  },
+  {
+    "column_name": "Fees Balance",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Outstanding additional fees (e.g., admin, setup)."
+  },
+  {
+    "column_name": "Protection/Insurance Balance",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Outstanding balance for insurance or protection plan."
+  },
+  {
+    "column_name": "Merchandise Balance",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Unpaid balance for merchandise purchases (e.g., locks, boxes)."
+  },
+  {
+    "column_name": "Late Fees Balance",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Outstanding late fee balance."
+  },
+  {
+    "column_name": "Lien Fees Balance",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Outstanding lien-related fee balance."
+  },
+  {
+    "column_name": "Tax Balance",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Outstanding tax balance."
+  },
+  {
+    "column_name": "Prepaid Rent",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Rent amount prepaid by the tenant."
+  },
+  {
+    "column_name": "Prepaid Additional Rent/Premium",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Prepaid portion of additional rent or premiums."
+  },
+  {
+    "column_name": "Prepaid Tax",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Prepaid tax amount."
+  },
+  {
+    "column_name": "Protection/Insurance Provider",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Name of the insurance or protection provider."
+  },
+  {
+    "column_name": "Protection/Insurance Coverage",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Coverage amount (e.g., $5,000)."
+  },
+  {
+    "column_name": "Additional Rent/Premium",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "monthly fee or premium charge"
+  },
+  {
+    "column_name": "Delinquency Status",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Current overdue or delinquency stage."
+  },
+  {
+    "column_name": "Lien Status",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Current lien process status (None, Posted, Sold, etc.)."
+  },
+  {
+    "column_name": "Lien Posted Date",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Date when the lien was officially posted."
+  },
+  {
+    "column_name": "Promotion",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Name of the active promotion applied."
+  },
+  {
+    "column_name": "Promotion Type",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Type of promotion (Percentage, Dollar, Fixed).."
+  },
+  {
+    "column_name": "Promotion Value",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Value or amount of promotion."
+  },
+  {
+    "column_name": "Promotion Start",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Start date of the promotion."
+  },
+  {
+    "column_name": "Promotion Length",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Duration of the promotion in days or months."
+  },
+  {
+    "column_name": "Discount",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Description or label of active discount."
+  },
+  {
+    "column_name": "Discount Type",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Type of discount (Percentage, Dollar, Fixed)."
+  },
+  {
+    "column_name": "Discount Value",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Value of the discount (e.g., 10, 25)."
+  },
+  {
+    "column_name": "Lien Holder First Name",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "First name of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder Last name",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Last name of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder Email",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Email address of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder Phone",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Contact phone of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder Address 1",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Primary address of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder Address 2",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Secondary address of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder City",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "City of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder State",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "State of the lien holder."
+  },
+  {
+    "column_name": "Lien Holder Zipcode",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "ZIP code of the lien holder."
+  },
+  {
+    "column_name": "Commanding Officer First Name",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "First name of the tenant’s commanding officer (if military)."
+  },
+  {
+    "column_name": "Commanding Officer Last Name",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Last name of the commanding officer."
+  },
+  {
+    "column_name": "Commanding Officer Phone",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Contact number of the commanding officer."
+  },
+  {
+    "column_name": "Commanding Officer Email",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Email address of the commanding officer."
+  },
+  {
+    "column_name": "Rank",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Military rank of the tenant."
+  },
+  {
+    "column_name": "Military Serial Number",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s official military serial or ID number."
+  },
+  {
+    "column_name": "Military Email",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Tenant’s military email address."
+  },
+  {
+    "column_name": "Service Member DOB",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Date of birth of the service member."
+  },
+  {
+    "column_name": "Expiration Term of Service",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "End date of the tenant’s military service."
+  },
+  {
+    "column_name": "Military Branch",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Branch of the military (e.g., Army, Navy)."
+  },
+  {
+    "column_name": "Military Unit Name",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Name of the tenant’s military unit."
+  },
+  {
+    "column_name": "Military Unit Phone",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Contact number of the military unit."
+  },
+  {
+    "column_name": "Military Unit Address 1",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Primary address of the military unit."
+  },
+  {
+    "column_name": "Military Unit Address 2",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Secondary address line for the military unit."
+  },
+  {
+    "column_name": "Military City",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "City of the military unit."
+  },
+  {
+    "column_name": "Military Unit State",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "State of the military unit."
+  },
+  {
+    "column_name": "Military Unit Zipcode",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "ZIP code of the military unit."
+  },
+  {
+    "column_name": "payment_cycle",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Billing frequency (Monthly, Weekly, etc.)."
+  },
+  {
+    "column_name": "IsBusinessLease",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Indicates if the lease is under a business name."
+  },
+  {
+    "column_name": "Catch Flag",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Internal flag used for exception or processing status."
+  },
+  {
+    "column_name": "Alarm Enabled",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Indicates if the unit alarm is enabled."
+  },
+  {
+    "column_name": "24-hour access",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Indicates if the tenant has 24-hour access to the unit."
+  },
+  {
+    "column_name": "start_date",
+    "mandatory_column": "Mandatory",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Lease start date."
+  },
+  {
+    "column_name": "pay_by_date",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Date by which rent payment must be made."
+  },
+  {
+    "column_name": "end_date",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Lease end date."
+  },
+  {
+    "column_name": "PaperlessBilling",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Indicates if the tenant receives digital invoices."
+  },
+  {
+    "column_name": "Offline",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Marks if account is inactive/offline in system."
+  },
+  {
+    "column_name": "OfflineReason",
+    "mandatory_column": "Optional",
+    "mandatory_data_without_tenant": "Optional",
+    "mandatory_data_with_tenant": "Optional",
+    "description": "Reason for account being offline."
+  }
+]
