@@ -1,6 +1,9 @@
 import re
-import pandas as pd
 import logging
+from datetime import datetime
+
+import pandas as pd
+from pandas.errors import OutOfBoundsDatetime
 
 logger = logging.getLogger("tagger")
 
@@ -13,6 +16,66 @@ STATE_CODES = {
     "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT",
     "VA","WA","WV","WI","WY","DC",
 }
+
+# Columns where a far-future end date means "open-ended / no end" (PMS exports).
+_OPEN_ENDED_DATE_COLS = frozenset({"end_date", "Move Out Date"})
+
+
+def _normalize_zip_for_validation(v):
+    """
+    Excel/CSV often loads ZIP as float (92308.0). Normalize to a digit string
+    suitable for ZIP_REGEX / length checks.
+    """
+    if pd.isna(v):
+        return None
+    if isinstance(v, (int, float)) and not isinstance(v, bool):
+        f = float(v)
+        if not f.is_integer():
+            return str(v).strip()
+        n = int(abs(f))
+        s = str(n)
+        if len(s) <= 5:
+            s = s.zfill(5)
+        return s
+    s = str(v).strip()
+    m = re.match(r"^(\d+)\.0$", s)
+    if m:
+        return m.group(1).zfill(5)
+    return s
+
+
+def _is_open_ended_date_value(v, col):
+    """True if v is a common 'no end date' sentinel (valid, not an error)."""
+    if col not in _OPEN_ENDED_DATE_COLS:
+        return False
+    if hasattr(v, "year") and getattr(v, "year", None) == 9999:
+        return True
+    s = str(v).strip()
+    return "9999-12-31" in s
+
+
+def _parse_date_for_tagging(v, col):
+    """
+    Parse a cell for date checks. Returns pd.Timestamp, or None if the value is
+    a valid open-ended sentinel (skip year-range checks). Raises ValueError if unparseable.
+    """
+    if _is_open_ended_date_value(v, col):
+        return None
+    try:
+        return pd.to_datetime(v)
+    except OutOfBoundsDatetime:
+        if _is_open_ended_date_value(v, col):
+            return None
+        raise ValueError from None
+    except Exception:
+        s = str(v).strip()
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%m/%d/%Y", "%m/%d/%y"):
+            for sl in (s, s[:19]):
+                try:
+                    return pd.Timestamp(datetime.strptime(sl, fmt))
+                except Exception:
+                    continue
+        raise ValueError from None
 
 
 def detect(df):
@@ -75,7 +138,9 @@ def detect(df):
         for i, v in df["ZIP"].items():
             if pd.isna(v) or str(v).strip() == "":
                 continue
-            z = str(v).strip()
+            z = _normalize_zip_for_validation(v)
+            if z is None:
+                continue
             if not ZIP_REGEX.match(z):
                 digits = re.sub(r"\D", "", z)
                 if len(digits) not in (5, 9):
@@ -99,15 +164,18 @@ def detect(df):
             if pd.isna(v) or str(v).strip() == "":
                 continue
             try:
-                parsed = pd.to_datetime(v)
-                if col == "DOB" and parsed.year > 2020:
-                    _add(i, col, v, "suspicious_date", f"Date of birth is in the future or too recent: {v}")
-                if col == "DOB" and parsed.year < 1900:
-                    _add(i, col, v, "suspicious_date", f"Date of birth before 1900: {v}")
-                if col == "Move In Date" and parsed.year < 2000:
-                    _add(i, col, v, "suspicious_date", f"Move-in date before year 2000: {v}")
-            except Exception:
+                parsed = _parse_date_for_tagging(v, col)
+            except (ValueError, TypeError):
                 _add(i, col, v, "invalid_date", f"Cannot parse as date: '{v}'")
+                continue
+            if parsed is None:
+                continue
+            if col == "DOB" and parsed.year > 2020:
+                _add(i, col, v, "suspicious_date", f"Date of birth is in the future or too recent: {v}")
+            if col == "DOB" and parsed.year < 1900:
+                _add(i, col, v, "suspicious_date", f"Date of birth before 1900: {v}")
+            if col == "Move In Date" and parsed.year < 2000:
+                _add(i, col, v, "suspicious_date", f"Move-in date before year 2000: {v}")
 
     # --- NEGATIVE BALANCE CHECKS ---
     for col in ["Rent Balance", "Fees Balance", "Tax Balance", "Late Fees Balance",
